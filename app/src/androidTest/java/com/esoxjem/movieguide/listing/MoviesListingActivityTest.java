@@ -27,8 +27,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.withText;
  */
 @RunWith(AndroidJUnit4.class)
 @LargeTest
-public class MoviesListingActivityTest
-{
+public class MoviesListingActivityTest {
     @Rule
     public final ActivityTestRule<MoviesListingActivity> activityTestRule = new ActivityTestRule<>(MoviesListingActivity.class);
 
@@ -41,21 +40,18 @@ public class MoviesListingActivityTest
     }
 
     @Test
-    public void shouldBeAbleToLaunchMainScreen()
-    {
+    public void shouldBeAbleToLaunchMainScreen() {
         onView(withId(R.id.toolbar)).check(matches(isDisplayed()));
         onView(withId(R.id.action_sort)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void shouldBeAbleToLoadMovies()
-    {
+    public void shouldBeAbleToLoadMovies() {
         onView(withId(R.id.movies_listing)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void shouldBeAbleToScrollViewMovieDetails()
-    {
+    public void shouldBeAbleToScrollViewMovieDetails() {
         onView(withId(R.id.movies_listing)).perform(RecyclerViewActions.actionOnItemAtPosition(10, click()));
         onView(withText("Summary")).check(matches(isDisplayed()));
     }
