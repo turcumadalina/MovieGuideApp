@@ -3,6 +3,11 @@ package com.esoxjem.movieguide.listing.helpers;
 import android.support.test.espresso.AppNotIdleException;
 import android.support.test.espresso.NoMatchingRootException;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.action.GeneralLocation;
+import android.support.test.espresso.action.GeneralSwipeAction;
+import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Swipe;
 import android.view.View;
 
 import junit.framework.AssertionFailedError;
@@ -43,4 +48,11 @@ public class HelpersMethods {
     public static void swipeUpOnScreen(Matcher<View> matcher) {
         onView(matcher).perform(swipeUp());
     }
+
+    public static ViewAction swipeFromTopToBottom() {
+        return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.CENTER,
+                GeneralLocation.TOP_CENTER, Press.FINGER);
+    }
+
+
 }

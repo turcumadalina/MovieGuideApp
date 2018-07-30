@@ -2,7 +2,9 @@ package com.esoxjem.movieguide.listing.helpers;
 
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hamcrest.BaseMatcher;
@@ -78,5 +80,71 @@ public class EspressoMatchers {
                 uiController.loopMainThreadForAtLeast(millis);
             }
         };
+    }
+
+    public static int getListViewChildCountFromRadioGroup(Matcher<View> matcher) {
+        final int[] count = {0};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(RadioGroup.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting child count";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                RadioGroup radioGroup = (RadioGroup) view;
+                count[0] = radioGroup.getChildCount();
+            }
+        });
+        return count[0];
+    }
+
+    public static int getListViewChildCountFromRecyclerView(Matcher<View> matcher) {
+        final int[] count = {0};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(RecyclerView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting child count";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                RecyclerView recyclerView = (RecyclerView) view;
+                count[0] = recyclerView.getChildCount();
+            }
+        });
+        return count[0];
+    }
+
+    public static String getText(final Matcher<View> matcher) {
+        final String[] stringHolder = {null};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TextView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting text from a TextView";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                TextView tv = (TextView) view;
+                stringHolder[0] = tv.getText().toString();
+            }
+        });
+        return stringHolder[0];
     }
 }
