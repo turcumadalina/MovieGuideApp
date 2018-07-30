@@ -50,9 +50,11 @@ public class HighestRatedMoviesTest extends StartTheApplication {
         // Expected Result: "Summary" and "Trailers" have the same font size
 //        String myFirstString = "Summary";
 //        String mySecondString = "Trailers";
-        final TextView requiredText = (TextView) EspressoMethods.childAtPosition(withId(R.id.scrolling_container), 1);
-        final String requiredString = requiredText.getText().toString();
-        double stringSize = requiredText.getTextSize();
+
+        final TextView REQUIRED_TEXT = (TextView) EspressoMethods.childAtPosition(withId(R.id.scrolling_container), 1);
+        final String REQUIRED_STRING = REQUIRED_TEXT.getText().toString();
+        double stringSize = REQUIRED_TEXT.getTextSize();
+
         // Step 5. Click on first trailer
 
         // Expected Result: The page redirects to Youtube
