@@ -10,6 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/trailers"
         android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textStyle="bold"
         android:textColor="@android:color/white"
         android:visibility="gone"/>
 

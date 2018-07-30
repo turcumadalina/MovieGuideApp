@@ -13,19 +13,23 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
 import static android.support.test.espresso.action.ViewActions.swipeRight;
+import static android.support.test.espresso.action.ViewActions.swipeUp;
 import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.PositionAssertions.isAbove;
 import static android.support.test.espresso.assertion.PositionAssertions.isBelow;
 import static android.support.test.espresso.assertion.PositionAssertions.isLeftOf;
 import static android.support.test.espresso.assertion.PositionAssertions.isRightOf;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.isClickable;
+import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
+import static org.hamcrest.core.AllOf.allOf;
 
 public class HelpersMethods {
     public static boolean isObjectDisplayed(Matcher<View> matcher) {
         try {
-            onView(matcher).check(matches(isDisplayed()));
+            onView(allOf(matcher, isCompletelyDisplayed())).check(matches(isDisplayed()));
             return true;
         } catch (Exception e) {
             return false;
@@ -115,5 +119,18 @@ public class HelpersMethods {
 
     public static void pressEnterKeyAndroid(Matcher<View> matcher) {
         onView(matcher).perform(pressImeActionButton());
+    }
+
+    public static void performSwipeUp(Matcher<View> matcher) {
+        onView(matcher).perform(swipeUp());
+    }
+
+    public static boolean isFirstObjectSiblingWithSecondObject(Matcher<View> matcher1, Matcher<View> matcher2) {
+        try {
+            onView(matcher1).check(matches(hasSibling(matcher2)));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

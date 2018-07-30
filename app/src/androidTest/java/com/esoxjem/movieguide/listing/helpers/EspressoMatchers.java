@@ -2,6 +2,10 @@ package com.esoxjem.movieguide.listing.helpers;
 
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.action.GeneralLocation;
+import android.support.test.espresso.action.GeneralSwipeAction;
+import android.support.test.espresso.action.Press;
+import android.support.test.espresso.action.Swipe;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
 import android.view.View;
@@ -220,14 +224,41 @@ public class EspressoMatchers {
         return new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(Description description) {
-                description.appendText("has Bold Text with resource" );
+                description.appendText("the resource is with Bold style" );
             }
 
             @Override
             public boolean matchesSafely(View view) {
                 TextView textView = (TextView)view;
-                return (textView.getTypeface().getStyle() == BOLD);
+                return (textView.getTypeface().isBold());
             }
         };
+    }
+
+    public static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
+        return new BaseMatcher<View>() {
+            int counter = 0;
+            @Override
+            public boolean matches(final Object item) {
+                if (matcher.matches(item)) {
+                    if(counter == position) {
+                        counter++;
+                        return true;
+                    }
+                    counter++;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText("Element at hierarchy position "+position);
+            }
+        };
+    }
+
+    public static ViewAction swipeFromBottomToTop() {
+        return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER,
+                GeneralLocation.TOP_CENTER, Press.FINGER);
     }
 }
