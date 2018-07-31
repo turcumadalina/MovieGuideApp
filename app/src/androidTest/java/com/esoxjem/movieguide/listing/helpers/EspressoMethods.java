@@ -3,7 +3,6 @@ package com.esoxjem.movieguide.listing.helpers;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.BoundedMatcher;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.listing.screen.Movie;
 
+import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
@@ -26,7 +26,7 @@ public class EspressoMethods {
         return new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(Description description) {
-                description.appendText("Child at position " + position + " in parent ");
+                description.appendText(Constants.CHILD_AT_POSITION + position + Constants.IN_PARENT);
                 parentMatcher.describeTo(description);
             }
 
@@ -50,7 +50,7 @@ public class EspressoMethods {
 
                 @Override
                 public String getDescription() {
-                    return "Click on a child view with specified id.";
+                    return Constants.CLICK_ON_A_CHILD_VIEW_WITH_SPECIFIED_ID;
                 }
 
                 @Override
@@ -60,7 +60,6 @@ public class EspressoMethods {
                 }
             };
         }
-
     }
 
     public static void checkTheNoteValue(int xItemsRequired) {
@@ -85,67 +84,59 @@ public class EspressoMethods {
 
             @Override
             public String getDescription() {
-                return "getting text from a TextView";
+                return Constants.GETTING_TEXT_FROM_A_TEXTVIEW;
             }
 
             @Override
             public void perform(UiController uiController, View view) {
-                TextView tv = (TextView) view; //Save, because of check in getConstraints()
+                TextView tv = (TextView) view;
                 stringHolder[0] = tv.getText().toString();
             }
         });
         return stringHolder[0];
     }
 
-    public static Matcher<View> withFontSize(final float expectedSize) {
-        return new BoundedMatcher<View, View>(TextView.class) {
+    public static int getFontSize(final Matcher<View> matcher) {
+        final int[] stringHolder = new int[1];
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TextView.class);
+            }
 
             @Override
-            public boolean matchesSafely(View target) {
-                if (!(target instanceof TextView)) {
-                    return false;
+            public String getDescription() {
+                return Constants.GETTING_TEXT_SIZE_FROM_A_TEXTVIEW;
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                TextView tv = (TextView) view;
+                float pixels = tv.getTextSize();
+                float actualSize = pixels / view.getResources().getDisplayMetrics().scaledDensity;
+                stringHolder[0] = (int) actualSize;
+            }
+        });
+        return stringHolder[0];
+    }
+
+    public static <T> Matcher<T> first(final Matcher<T> matcher) {
+        return new BaseMatcher<T>() {
+            boolean isFirst = true;
+
+            @Override
+            public boolean matches(final Object item) {
+                if (isFirst && matcher.matches(item)) {
+                    isFirst = false;
+                    return true;
                 }
-                TextView targetEditText = (TextView) target;
-                float pixels = targetEditText.getTextSize();
-                float actualSize = pixels / target.getResources().getDisplayMetrics().scaledDensity;
-                return Float.compare(actualSize, expectedSize) == 0;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("with fontSize: ");
-                description.appendValue(expectedSize);
-            }
-        };
-    }
-
-    public static void checkFontSize(Matcher<View> myMatcher) {
-        String myString = getText(myMatcher);
-    }
-
-    public class FontSizeMatcher extends TypeSafeMatcher<View> {
-
-        private final float expectedSize;
-
-        public FontSizeMatcher(float expectedSize) {
-            super(View.class);
-            this.expectedSize = expectedSize;
-        }
-
-        @Override
-        protected boolean matchesSafely(View target) {
-            if (!(target instanceof TextView)) {
                 return false;
             }
-            TextView targetEditText = (TextView) target;
-            return targetEditText.getTextSize() == expectedSize;
-        }
 
-
-        @Override
-        public void describeTo(Description description) {
-            description.appendText("with fontSize: ");
-            description.appendValue(expectedSize);
-        }
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText(Constants.SHOULD_RETURN_FIRST_MATCHING_ITEM);
+            }
+        };
     }
 }

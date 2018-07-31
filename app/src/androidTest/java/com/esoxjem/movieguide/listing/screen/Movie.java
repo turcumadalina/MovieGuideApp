@@ -35,4 +35,8 @@ public class Movie {
     public static boolean isToolbarVisible() {
         return HelpersMethods.isVisible(withId(R.id.toolbar));
     }
+
+    public static void clickOnTheSpecificTrailer() {
+        HelpersMethods.clickAction(EspressoMethods.first(withId(R.id.video_thumb)));
+    }
 }

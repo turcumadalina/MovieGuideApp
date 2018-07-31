@@ -1,8 +1,8 @@
 package com.esoxjem.movieguide.listing.test;
 
-import android.widget.TextView;
+import android.support.test.espresso.Espresso;
 
-import com.esoxjem.movieguide.R;
+import com.esoxjem.movieguide.listing.helpers.Constants;
 import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.StartTheApplication;
 import com.esoxjem.movieguide.listing.screen.Home;
@@ -10,7 +10,8 @@ import com.esoxjem.movieguide.listing.screen.Movie;
 
 import org.junit.Test;
 
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class HighestRatedMoviesTest extends StartTheApplication {
@@ -48,20 +49,18 @@ public class HighestRatedMoviesTest extends StartTheApplication {
         assertTrue("Toolbar is NOT displayed.", Movie.isToolbarVisible());
 
         // Expected Result: "Summary" and "Trailers" have the same font size
-//        String myFirstString = "Summary";
-//        String mySecondString = "Trailers";
-
-        final TextView REQUIRED_TEXT = (TextView) EspressoMethods.childAtPosition(withId(R.id.scrolling_container), 1);
-        final String REQUIRED_STRING = REQUIRED_TEXT.getText().toString();
-        double stringSize = REQUIRED_TEXT.getTextSize();
+        assertEquals("", EspressoMethods.getFontSize(withText(Constants.SUMMARY)), EspressoMethods.getFontSize(withText(Constants.TRAILERS)));
 
         // Step 5. Click on first trailer
+        Movie.clickOnTheSpecificTrailer();
 
         // Expected Result: The page redirects to Youtube
 
         // Step 6. Click back (twice)
+        Espresso.pressBack();
+        Thread.sleep(5000);
 
         // The first four movies in the list have a rating higher than 8
-
+        Movie.clickMoviesAndCheckTheValueOfTheNotes();
     }
 }
