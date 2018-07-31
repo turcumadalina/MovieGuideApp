@@ -1,14 +1,9 @@
 package com.esoxjem.movieguide.listing.helpers;
 
-import android.graphics.Typeface;
 import android.view.View;
-import android.widget.TextView;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.TypeSafeMatcher;
 
-import static android.graphics.Typeface.BOLD;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.pressImeActionButton;
@@ -132,5 +127,11 @@ public class HelpersMethods {
         } catch (Exception e) {
             return false;
         }
+    }
+
+    public static String getMovieFirstWord(Matcher<View> matcher) {
+        String movieTitle = EspressoMatchers.getText(matcher);
+        String[] movieTitleWords = movieTitle.split(" ");
+        return movieTitleWords[0];
     }
 }

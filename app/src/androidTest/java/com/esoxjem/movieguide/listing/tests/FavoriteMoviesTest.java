@@ -3,11 +3,13 @@ package com.esoxjem.movieguide.listing.tests;
 import android.support.test.espresso.Espresso;
 
 import com.esoxjem.movieguide.listing.helpers.EspressoTestBase;
+import com.esoxjem.movieguide.listing.screens.Favorites;
 import com.esoxjem.movieguide.listing.screens.Home;
 import com.esoxjem.movieguide.listing.screens.Movie;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class FavoriteMoviesTest extends EspressoTestBase {
@@ -63,20 +65,28 @@ public class FavoriteMoviesTest extends EspressoTestBase {
         assertTrue("\"Highest Rated\" button and \"Favorites\" button are not sibling.", Movie.isHighestRatingSiblingWithFavorites());
 
         // Verify: There are 4 different buttons, descendants of a RadioGroup.
-        
+        assertTrue("There are not 4 different buttons, descendants of a RadioGroup.", Home.isRadioGroupChildrenDifferent());
 
         // Step: Click on "Favorites" button.
+        Movie.clickFavorites();
 
         // Verify: The first word is the same for both movies.
+        assertEquals("The first word is not the same for both movies.", Favorites.getFirstMovieFirstWord(), Favorites.getSecondMovieFirstWord());
 
         // Step: Click on the first movie and click on "Favorites" button.
+        Home.clickOnFirstMovie();
+        Movie.clickFavouritesButton();
 
         // Step: Click back (NOT android).
+        Movie.navigateBack();
 
         // Step: Click on sort button.
+        Movie.clickSortAction();
 
         // Step: Click back (android).
+        Espresso.pressBack();
 
         // Verify: There is only one movie in your list.
+        assertEquals("There is not one movie in your list.", 1, Favorites.getFavoritesListChildrenNo());
     }
 }

@@ -8,9 +8,12 @@ import android.support.test.espresso.action.Press;
 import android.support.test.espresso.action.Swipe;
 import android.support.test.espresso.matcher.BoundedMatcher;
 import android.support.test.espresso.matcher.ViewMatchers;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import org.hamcrest.BaseMatcher;
@@ -20,10 +23,10 @@ import org.hamcrest.TypeSafeMatcher;
 
 import java.security.SecureRandom;
 
-import static android.graphics.Typeface.BOLD;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static com.esoxjem.movieguide.listing.helpers.EspressoTestBase.device;
 
 public class EspressoMatchers {
 
@@ -40,6 +43,24 @@ public class EspressoMatchers {
                     return parentMatcher.matches(view.getParent());
                 }
                 ViewGroup group = (ViewGroup) view.getParent();
+                return parentMatcher.matches(view.getParent()) && group.getChildAt(childPosition).equals(view);
+            }
+        };
+    }
+
+    public static Matcher<View> nthChildOfRadioGroup(final Matcher<View> parentMatcher, final int childPosition) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("with " + childPosition + " child view of type parentMatcher");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (!(view.getParent() instanceof RadioGroup)) {
+                    return parentMatcher.matches(view.getParent());
+                }
+                RadioGroup group = (RadioGroup) view.getParent();
                 return parentMatcher.matches(view.getParent()) && group.getChildAt(childPosition).equals(view);
             }
         };
@@ -150,6 +171,28 @@ public class EspressoMatchers {
         return count[0];
     }
 
+    public static int getRecyclerViewChildCount(Matcher<View> matcher) {
+        final int[] count = {0};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return ViewMatchers.isAssignableFrom(RecyclerView.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting child count";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                RecyclerView rv = (RecyclerView) view;
+                count[0] = rv.getChildCount();
+            }
+        });
+        return count[0];
+    }
+
     public static String generateRandomString(int stringLength) {
         final String AB = "abcdefghijklmnopqrstuvwxyz";
         SecureRandom rnd = new SecureRandom();
@@ -196,6 +239,28 @@ public class EspressoMatchers {
             public void perform(UiController uiController, View view) {
                 TextView tv = (TextView) view;
                 stringHolder[0] = tv.getText().toString();
+            }
+        });
+        return stringHolder[0];
+    }
+
+    public static String getTextFromRadioButton(final Matcher<View> matcher) {
+        final String[] stringHolder = {null};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(RadioButton.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return "getting text from a RadioGroup";
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                RadioButton rb = (RadioButton) view;
+                stringHolder[0] = rb.getText().toString();
             }
         });
         return stringHolder[0];
@@ -257,8 +322,13 @@ public class EspressoMatchers {
         };
     }
 
+
     public static ViewAction swipeFromBottomToTop() {
         return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER,
                 GeneralLocation.TOP_CENTER, Press.FINGER);
+    }
+
+    public static boolean XYSwipe() {
+        return device.swipe(device.getDisplayWidth()/2, device.getDisplayHeight() - 10, device.getDisplayWidth()/2, 0, 20);
     }
 }

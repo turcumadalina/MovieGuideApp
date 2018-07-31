@@ -1,9 +1,13 @@
 package com.esoxjem.movieguide.listing.screens;
 
+import android.view.View;
+
 import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.listing.helpers.Constants;
 import com.esoxjem.movieguide.listing.helpers.EspressoMatchers;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
+
+import org.hamcrest.Matcher;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
@@ -55,6 +59,31 @@ public class Home {
             onView(withId(R.id.movies_listing)).perform(EspressoMatchers.swipeFromBottomToTop());
             count++;
         }
+    }
 
+    public static boolean isRadioGroupChildrenDifferent() {
+        boolean isTextDifferent = false;
+
+        for (int i = 0; i < 3; i++) {
+            String firstText = EspressoMatchers.getTextFromRadioButton(EspressoMatchers.nthChildOfRadioGroup(withId(R.id.sorting_group), i));
+            String secondText = EspressoMatchers.getTextFromRadioButton(EspressoMatchers.nthChildOfRadioGroup(withId(R.id.sorting_group), i + 1));
+
+            if (firstText.equals(secondText)) {
+                isTextDifferent = false;
+            } else {
+                isTextDifferent = true;
+                break;
+            }
+        }
+        return isTextDifferent;
+    }
+
+    public static void performGeneralScrollCustom(Matcher<View> matcher, int maxNoOfScrolls) {
+        int count = 0;
+        while (!HelpersMethods.isObjectDisplayed(matcher) && count < maxNoOfScrolls) {
+            EspressoMatchers.XYSwipe();
+            Home.waitToLoad();
+            count++;
+        }
     }
 }
