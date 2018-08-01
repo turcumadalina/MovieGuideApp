@@ -4,8 +4,8 @@ import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.listing.helpers.EspressoMatchers;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
 
-import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
+import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static org.hamcrest.core.AllOf.allOf;
 
@@ -20,7 +20,7 @@ public class SearchResults {
     }
 
     public static void swipeUpTheMovieList() {
-        onView(EspressoMatchers.getElementFromMatchAtPosition(withId(R.id.movie_container), 1)).perform(HelpersMethods.swipeFromTopToBottom());
+        HelpersMethods.swipeOnXYCoordinates();
     }
 
     public static void clickSortButton() {
@@ -35,20 +35,9 @@ public class SearchResults {
         return EspressoMatchers.getListViewChildCountFromRadioGroup(withId(R.id.sorting_group));
     }
 
-    public static boolean isMostPopularButtonDisplayed() {
-        return HelpersMethods.isUIObjectDisplayed(withId(R.id.most_popular));
-    }
-
-    public static boolean isHighestRatedButtonDisplayed() {
-        return HelpersMethods.isUIObjectDisplayed(withId(R.id.highest_rated));
-    }
-
-    public static boolean isFavoritesButtonDisplayed() {
-        return HelpersMethods.isUIObjectDisplayed(withId(R.id.favorites));
-    }
-
-    public static boolean isNewestButtonDisplayed() {
-        return HelpersMethods.isUIObjectDisplayed(withId(R.id.newest));
+    public static boolean isRadioGroupWithDifferentChildren() {
+        return HelpersMethods.isUIObjectDisplayed(allOf(withId(R.id.sorting_group), withChild(withId(R.id.most_popular)), withChild(withId(R.id.highest_rated)),
+                withChild(withId(R.id.favorites)), withChild(withId(R.id.newest))));
     }
 
     public static void clickOnFavoritesButton() {

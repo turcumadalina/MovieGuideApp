@@ -67,10 +67,7 @@ public class FavoriteMoviesTest extends EspressoTestBase {
 
         // Verify: There are 4 different buttons, descendants of a RadioGroup.
         assertEquals("On Radio Group are more/less then 4 children", 4, SearchResults.isRadioGroupWithFourChildren());
-        assertTrue("Most Popular button is not displayed", SearchResults.isMostPopularButtonDisplayed());
-        assertTrue("Highest Rated button is not displayed", SearchResults.isHighestRatedButtonDisplayed());
-        assertTrue("Favorites button is not displayed", SearchResults.isFavoritesButtonDisplayed());
-        assertTrue("Newest button is not displayed", SearchResults.isNewestButtonDisplayed());
+        assertTrue("RadioGroup doesn't have 4 different children", SearchResults.isRadioGroupWithDifferentChildren());
 
         // Step: Click on "Favorites" button.
         HelpersMethods.waitForScreenToLoad();
@@ -80,7 +77,7 @@ public class FavoriteMoviesTest extends EspressoTestBase {
         Espresso.closeSoftKeyboard();
 
         // Verify: The first word is the same for both movies.
-
+        assertEquals("The first word is not the same for both movies.", Favorites.firstWordFromFirstMovieName(), Favorites.firstWordFromSecondMovieName());
 
         // Step: Click on the first movie and click on "Favorites" button.
         HelpersMethods.waitForScreenToLoad();

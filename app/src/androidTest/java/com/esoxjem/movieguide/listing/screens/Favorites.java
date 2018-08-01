@@ -15,4 +15,12 @@ public class Favorites {
     public static int isFavoriteListWithOneMovie() {
         return EspressoMatchers.getListViewChildCountFromRecyclerView(withId(R.id.movies_listing));
     }
+
+    public static String firstWordFromFirstMovieName() {
+        return HelpersMethods.getMovieNameFirstWord(EspressoMatchers.getElementFromMatchAtPosition((withId(R.id.movie_name)), 0));
+    }
+
+    public static String firstWordFromSecondMovieName() {
+        return HelpersMethods.getMovieNameFirstWord(EspressoMatchers.getElementFromMatchAtPosition((withId(R.id.movie_name)), 1));
+    }
 }

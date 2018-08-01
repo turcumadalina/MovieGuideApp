@@ -17,29 +17,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 
 public class EspressoMatchers {
 
-    public static int getNoOfTextLines(final Matcher<View> matcher) {
-        final int[] stringHolder = new int[1];
-        onView(matcher).perform(new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isAssignableFrom(TextView.class);
-            }
-
-            @Override
-            public String getDescription() {
-                return "getting text lines from a TextView";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                TextView tv = (TextView) view;
-                int lineNo = tv.getLineCount();
-                stringHolder[0] = lineNo;
-            }
-        });
-        return stringHolder[0];
-    }
-
     public static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
         return new BaseMatcher<View>() {
             int counter = 0;
