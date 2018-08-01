@@ -8,8 +8,11 @@ import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 
 public class Movie {
     public static void clickMoviesAndCheckTheValueOfTheNotes() {
@@ -37,6 +40,19 @@ public class Movie {
     }
 
     public static void clickOnTheSpecificTrailer() {
-        HelpersMethods.clickAction(EspressoMethods.first(withId(R.id.video_thumb)));
+        HelpersMethods.clickAction(EspressoMethods.getFirstChild(withId(R.id.video_thumb)));
+    }
+
+    public static void clickOnTheSpecificMovie() {
+        HelpersMethods.clickAction(EspressoMethods.getFirstChild(withId(R.id.movie_container)));
+    }
+
+    public static boolean isTheMovieNameVisible() {
+        EspressoMethods.waitForXSeconds(2000);
+        return HelpersMethods.isVisible(withId(R.id.movie_name));
+    }
+
+    public static boolean isTextStyleBold() {
+        return HelpersMethods.isVisible(allOf(withText(Constants.SUMMARY), EspressoMethods.hasBoldText()));
     }
 }

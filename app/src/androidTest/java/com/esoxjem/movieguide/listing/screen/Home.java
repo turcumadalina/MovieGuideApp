@@ -3,6 +3,7 @@ package com.esoxjem.movieguide.listing.screen;
 import android.widget.LinearLayout;
 
 import com.esoxjem.movieguide.R;
+import com.esoxjem.movieguide.listing.helpers.Constants;
 import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
 
@@ -28,5 +29,13 @@ public class Home {
 
     public static void clickOnHighestRatedButton() {
         HelpersMethods.clickAction(withId(R.id.highest_rated));
+    }
+
+    public static void clickSearchButton() {
+        HelpersMethods.clickAction(withId(R.id.action_search));
+    }
+
+    public static void typeSpecificTextOnSearchBox() {
+        HelpersMethods.typeTextAction(withId(R.id.search_src_text), Constants.SKYSCRAPER);
     }
 }

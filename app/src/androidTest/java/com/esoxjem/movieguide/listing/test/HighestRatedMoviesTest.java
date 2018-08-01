@@ -10,6 +10,8 @@ import com.esoxjem.movieguide.listing.screen.Movie;
 
 import org.junit.Test;
 
+import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
@@ -17,7 +19,7 @@ import static junit.framework.Assert.assertTrue;
 public class HighestRatedMoviesTest extends StartTheApplication {
 
     @Test
-    public void testHighestRatedMovies() throws InterruptedException {
+    public void testHighestRatedMovies() {
         // Step 1. Click on Hamburger
         Home.clickOnHamburgerButton();
 
@@ -28,7 +30,7 @@ public class HighestRatedMoviesTest extends StartTheApplication {
         assertTrue("The second child of sorting_group has NOT text \"Highest Rated\".", Home.isHighestRatedTheSecondChildOfSortingGroupVisible());
 
         //Wait 2 seconds
-        Thread.sleep(2000);
+        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(5000));
 
         // Step 2. Click on "Highest Rated"
         Home.clickOnHighestRatedButton();
@@ -49,16 +51,19 @@ public class HighestRatedMoviesTest extends StartTheApplication {
         assertTrue("Toolbar is NOT displayed.", Movie.isToolbarVisible());
 
         // Expected Result: "Summary" and "Trailers" have the same font size
-        assertEquals("", EspressoMethods.getFontSize(withText(Constants.SUMMARY)), EspressoMethods.getFontSize(withText(Constants.TRAILERS)));
+        assertEquals("\"Summary\" and \"Trailers\" have NOT the same font size.", EspressoMethods.getFontSize(withText(Constants.SUMMARY)), EspressoMethods.getFontSize(withText(Constants.TRAILERS)));
 
         // Step 5. Click on first trailer
         Movie.clickOnTheSpecificTrailer();
 
+        // Wait at least 5 seconds
+        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(5000));
+
         // Expected Result: The page redirects to Youtube
+        assertTrue("MoviesListingActivity application is NOT in progress.", activityTestRule.getActivity() != null);
 
         // Step 6. Click back (twice)
         Espresso.pressBack();
-        Thread.sleep(5000);
 
         // The first four movies in the list have a rating higher than 8
         Movie.clickMoviesAndCheckTheValueOfTheNotes();

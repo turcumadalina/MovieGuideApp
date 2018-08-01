@@ -1,8 +1,10 @@
 package com.esoxjem.movieguide.listing.helpers;
 
+import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.util.HumanReadables;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -16,8 +18,11 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.concurrent.TimeoutException;
+
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 
 public class EspressoMethods {
@@ -84,7 +89,7 @@ public class EspressoMethods {
 
             @Override
             public String getDescription() {
-                return Constants.GETTING_TEXT_FROM_A_TEXTVIEW;
+                return Constants.GETTING_TEXT_FROM_A_TEXT_VIEW;
             }
 
             @Override
@@ -106,7 +111,7 @@ public class EspressoMethods {
 
             @Override
             public String getDescription() {
-                return Constants.GETTING_TEXT_SIZE_FROM_A_TEXTVIEW;
+                return Constants.GETTING_TEXT_SIZE_FROM_A_TEXT_VIEW;
             }
 
             @Override
@@ -120,7 +125,7 @@ public class EspressoMethods {
         return stringHolder[0];
     }
 
-    public static <T> Matcher<T> first(final Matcher<T> matcher) {
+    public static <T> Matcher<T> getFirstChild(final Matcher<T> matcher) {
         return new BaseMatcher<T>() {
             boolean isFirst = true;
 
@@ -136,6 +141,94 @@ public class EspressoMethods {
             @Override
             public void describeTo(final Description description) {
                 description.appendText(Constants.SHOULD_RETURN_FIRST_MATCHING_ITEM);
+            }
+        };
+    }
+
+    public static ViewAction waitForXSeconds(final long millis) {
+        return new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isRoot();
+            }
+
+            @Override
+            public String getDescription() {
+                return Constants.WAIT_FOR + millis + Constants.MILLIS;
+            }
+
+            @Override
+            public void perform(final UiController uiController, final View view) {
+                uiController.loopMainThreadUntilIdle();
+                final long startTime = System.currentTimeMillis();
+                final long endTime = startTime + millis;
+
+                do {
+                    uiController.loopMainThreadForAtLeast(50);
+                }
+                while (System.currentTimeMillis() < endTime);
+
+                // timeout happens
+                throw new PerformException.Builder()
+                        .withActionDescription(this.getDescription())
+                        .withViewDescription(HumanReadables.describe(view))
+                        .withCause(new TimeoutException())
+                        .build();
+            }
+        };
+    }
+
+    public static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
+        return new BaseMatcher<View>() {
+            int counter = 0;
+
+            @Override
+            public boolean matches(final Object item) {
+                if (matcher.matches(item)) {
+                    if (counter == position) {
+                        counter++;
+                        return true;
+                    }
+                    counter++;
+                }
+                return false;
+            }
+
+            @Override
+            public void describeTo(final Description description) {
+                description.appendText(Constants.ELEMENT_AT_HIERARCHY_POSITION + position);
+            }
+        };
+    }
+
+    public static Matcher<View> hasBoldText() {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("has bold text");
+            }
+
+            @Override
+            public boolean matchesSafely(View view) {
+                if (view instanceof TextView) {
+                    TextView tv = (TextView) view;
+                    return tv.getTypeface().isBold();
+                }
+                return false;
+            }
+        };
+    }
+
+    public static TypeSafeMatcher<View> isTextInLines(final int lines) {
+        return new TypeSafeMatcher<View>() {
+            @Override
+            protected boolean matchesSafely(View item) {
+                return ((TextView) item).getLineCount() == lines;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("isTextInLines");
             }
         };
     }
