@@ -1,10 +1,8 @@
 package com.esoxjem.movieguide.listing.helpers;
 
-import android.support.test.espresso.PerformException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.util.HumanReadables;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -17,8 +15,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-import java.util.concurrent.TimeoutException;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -159,21 +155,8 @@ public class EspressoMethods {
 
             @Override
             public void perform(final UiController uiController, final View view) {
-                uiController.loopMainThreadUntilIdle();
-                final long startTime = System.currentTimeMillis();
-                final long endTime = startTime + millis;
+                uiController.loopMainThreadForAtLeast(millis);
 
-                do {
-                    uiController.loopMainThreadForAtLeast(50);
-                }
-                while (System.currentTimeMillis() < endTime);
-
-                // timeout happens
-                throw new PerformException.Builder()
-                        .withActionDescription(this.getDescription())
-                        .withViewDescription(HumanReadables.describe(view))
-                        .withCause(new TimeoutException())
-                        .build();
             }
         };
     }
@@ -219,17 +202,26 @@ public class EspressoMethods {
         };
     }
 
-    public static TypeSafeMatcher<View> isTextInLines(final int lines) {
-        return new TypeSafeMatcher<View>() {
+    public static int getTheNumberOfTextLines(final Matcher<View> matcher) {
+        final int[] stringHolder = new int[1];
+        onView(matcher).perform(new ViewAction() {
             @Override
-            protected boolean matchesSafely(View item) {
-                return ((TextView) item).getLineCount() == lines;
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(TextView.class);
             }
 
             @Override
-            public void describeTo(Description description) {
-                description.appendText("isTextInLines");
+            public String getDescription() {
+                return Constants.GETTING_TEXT_LINES_FROM_A_TEXT_VIEW;
             }
-        };
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                TextView tv = (TextView) view;
+                int lineNo = tv.getLineCount();
+                stringHolder[0] = lineNo;
+            }
+        });
+        return stringHolder[0];
     }
 }

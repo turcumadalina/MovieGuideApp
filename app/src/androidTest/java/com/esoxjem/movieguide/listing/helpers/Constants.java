@@ -14,4 +14,5 @@ public class Constants {
     public static final String MILLIS = " millis.";
     public static final String ELEMENT_AT_HIERARCHY_POSITION = "Element at hierarchy position ";
     public static final String SKYSCRAPER = "Skyscraper";
+    public static final String GETTING_TEXT_LINES_FROM_A_TEXT_VIEW = "getting text lines from a TextView";
 }

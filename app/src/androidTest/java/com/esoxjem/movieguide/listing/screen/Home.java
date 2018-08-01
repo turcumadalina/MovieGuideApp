@@ -38,4 +38,8 @@ public class Home {
     public static void typeSpecificTextOnSearchBox() {
         HelpersMethods.typeTextAction(withId(R.id.search_src_text), Constants.SKYSCRAPER);
     }
+
+    public static void clickOnFavoritesButton() {
+        HelpersMethods.clickAction(withId(R.id.favorites));
+    }
 }

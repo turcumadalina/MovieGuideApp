@@ -30,7 +30,7 @@ public class HighestRatedMoviesTest extends StartTheApplication {
         assertTrue("The second child of sorting_group has NOT text \"Highest Rated\".", Home.isHighestRatedTheSecondChildOfSortingGroupVisible());
 
         //Wait 2 seconds
-        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(5000));
+        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(2000));
 
         // Step 2. Click on "Highest Rated"
         Home.clickOnHighestRatedButton();
