@@ -11,6 +11,7 @@ import static org.hamcrest.core.AllOf.allOf;
 
 public class SearchResults {
 
+    // This is for Favorite movie test
     public static void clickOnSecondMovie() {
         HelpersMethods.clickUIElement(EspressoMatchers.getElementFromMatchAtPosition(withId(R.id.movie_container), 1));
     }
@@ -42,5 +43,10 @@ public class SearchResults {
 
     public static void clickOnFavoritesButton() {
         HelpersMethods.clickUIElement(withId(R.id.favorites));
+    }
+
+    public static void clickOnFirstMovie() {
+        HelpersMethods.waitForScreenToLoad();
+        HelpersMethods.clickUIElement(EspressoMatchers.getElementFromMatchAtPosition(withId(R.id.movie_container), 0));
     }
 }

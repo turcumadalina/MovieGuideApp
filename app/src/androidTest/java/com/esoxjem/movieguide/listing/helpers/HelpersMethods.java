@@ -55,4 +55,9 @@ public class HelpersMethods {
         return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() - 45 * device.getDisplayHeight() / 100,
                 device.getDisplayWidth() / 2, device.getDisplayHeight() - 60 * device.getDisplayHeight() / 100, 10);
     }
+
+    public static boolean swipeOnXY() {
+        return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 + 30,
+                device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 - 30, 10);
+    }
 }
