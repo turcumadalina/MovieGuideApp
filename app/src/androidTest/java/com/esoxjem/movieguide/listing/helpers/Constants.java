@@ -15,4 +15,10 @@ public class Constants {
     public static final String ELEMENT_AT_HIERARCHY_POSITION = "Element at hierarchy position ";
     public static final String SKYSCRAPER = "Skyscraper";
     public static final String GETTING_TEXT_LINES_FROM_A_TEXT_VIEW = "getting text lines from a TextView";
+    public static final String PURGE = "Purge";
+    public static final String MOVIE_GUIDE = "MovieGuide";
+    public static final String GETTING_CHILD_COUNT = "getting child count";
+    public static final String THE_FIRST_PURGE = "The First Purge";
+    public static final String THE_PURGE_ANARCHY = "The Purge: Anarchy";
+    public static final String HAS_BOLD_TEXT = "has bold text";
 }

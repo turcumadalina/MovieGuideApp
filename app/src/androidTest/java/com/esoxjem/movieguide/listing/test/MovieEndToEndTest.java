@@ -22,7 +22,7 @@ public class MovieEndToEndTest extends StartTheApplication {
 
         // Step 2. Search for the "Skyscraper" movie.
         Home.clickSearchButton();
-        Home.typeSpecificTextOnSearchBox();
+        Home.typeSkyscraperTextOnSearchBox();
 
         //Wait 2 seconds.
         onView(isRoot()).perform(EspressoMethods.waitForXSeconds(2000));
@@ -61,7 +61,7 @@ public class MovieEndToEndTest extends StartTheApplication {
         Home.clickOnHamburgerButton();
         Home.clickOnFavoritesButton();
 
-        // wait 3 seconds
+        // Wait 3 seconds
         onView(isRoot()).perform(EspressoMethods.waitForXSeconds(3000));
 
         // Expected Result: On "Favorites" screen, the movie you are looking for is displayed.

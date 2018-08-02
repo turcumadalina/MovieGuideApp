@@ -1,11 +1,16 @@
 package com.esoxjem.movieguide.listing.helpers;
 
+import android.support.test.espresso.NoMatchingViewException;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
+import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.RecyclerViewActions;
+import android.support.test.espresso.matcher.BoundedMatcher;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.esoxjem.movieguide.R;
@@ -20,6 +25,9 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
 
 public class EspressoMethods {
     public static Matcher<View> childAtPosition(final Matcher<View> parentMatcher, final int position) {
@@ -156,7 +164,6 @@ public class EspressoMethods {
             @Override
             public void perform(final UiController uiController, final View view) {
                 uiController.loopMainThreadForAtLeast(millis);
-
             }
         };
     }
@@ -188,7 +195,7 @@ public class EspressoMethods {
         return new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(Description description) {
-                description.appendText("has bold text");
+                description.appendText(Constants.HAS_BOLD_TEXT);
             }
 
             @Override
@@ -223,5 +230,88 @@ public class EspressoMethods {
             }
         });
         return stringHolder[0];
+    }
+
+    public static Matcher<View> withChildViewCount(final int count, final Matcher<View> childMatcher) {
+        return new BoundedMatcher<View, ViewGroup>(ViewGroup.class) {
+            @Override
+            protected boolean matchesSafely(ViewGroup viewGroup) {
+                int matchCount = 0;
+                for (int i = 0; i < viewGroup.getChildCount(); i++) {
+                    if (childMatcher.matches(viewGroup.getChildAt(i))) {
+                        matchCount++;
+                    }
+                }
+                return matchCount == count;
+            }
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("ViewGroup with child-count=" + count + " and");
+                childMatcher.describeTo(description);
+            }
+        };
+    }
+
+    public static class RecyclerViewItemCountAssertion implements ViewAssertion {
+        private final int expectedCount;
+
+        public RecyclerViewItemCountAssertion(int expectedCount) {
+            this.expectedCount = expectedCount;
+        }
+
+        @Override
+        public void check(View view, NoMatchingViewException noViewFoundException) {
+            if (noViewFoundException != null) {
+                throw noViewFoundException;
+            }
+
+            RecyclerView recyclerView = (RecyclerView) view;
+            RecyclerView.Adapter adapter = recyclerView.getAdapter();
+            assertThat(adapter.getItemCount(), is(expectedCount));
+        }
+    }
+
+    private static int getTextViewCount(ViewGroup viewGroup) {
+        int count = 0;
+        for (int i = 0; i < viewGroup.getChildCount(); i++) {
+            View childView = viewGroup.getChildAt(i);
+
+            if (childView instanceof TextView) {
+                count++;
+            }
+            if (childView instanceof ViewGroup) {
+                count += getTextViewCount((ViewGroup) childView);
+            }
+        }
+        return count;
+    }
+
+    public static int getCountChildrenFromTheRadioGroupList(Matcher<View> matcher) {
+        final int[] count = {0};
+        onView(matcher).perform(new ViewAction() {
+            @Override
+            public Matcher<View> getConstraints() {
+                return isAssignableFrom(RadioGroup.class);
+            }
+
+            @Override
+            public String getDescription() {
+                return Constants.GETTING_CHILD_COUNT;
+            }
+
+            @Override
+            public void perform(UiController uiController, View view) {
+                RadioGroup radioGroup = (RadioGroup) view;
+                count[0] = radioGroup.getChildCount();
+            }
+        });
+        return count[0];
+    }
+
+    public static boolean checkTheFirstWord() {
+        String theFirstWordOfTheSecondMovie = getText(withText(Constants.THE_FIRST_PURGE)).substring(0, 3);
+        String theFirstWordOfTheThirdMovie = getText(withText(Constants.THE_PURGE_ANARCHY)).substring(0, 3);
+        return theFirstWordOfTheSecondMovie.equals(theFirstWordOfTheThirdMovie);
     }
 }
