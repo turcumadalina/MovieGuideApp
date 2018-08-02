@@ -15,7 +15,7 @@ import static junit.framework.Assert.assertTrue;
 public class FavoriteMoviesTest extends EspressoTestBase {
 
     @Test
-    public void testFavoriteMovies () {
+    public void testFavoriteMovies() {
         // Step: Start the app.
 
         // Verify: "MovieGuide" text is displayed.
@@ -85,6 +85,7 @@ public class FavoriteMoviesTest extends EspressoTestBase {
 
         // Step: Click back (android).
         Espresso.pressBack();
+
 
         // Verify: There is only one movie in your list.
         assertEquals("There is not one movie in your list.", 1, Favorites.getFavoritesListChildrenNo());

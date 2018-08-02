@@ -1,18 +1,15 @@
 package com.esoxjem.movieguide.listing.screens;
 
-import android.view.View;
-
 import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.listing.helpers.Constants;
 import com.esoxjem.movieguide.listing.helpers.EspressoMatchers;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
 
-import org.hamcrest.Matcher;
-
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.core.AllOf.allOf;
 
 public class Home {
@@ -78,12 +75,30 @@ public class Home {
         return isTextDifferent;
     }
 
-    public static void performGeneralScrollCustom(Matcher<View> matcher, int maxNoOfScrolls) {
-        int count = 0;
-        while (!HelpersMethods.isObjectDisplayed(matcher) && count < maxNoOfScrolls) {
-            EspressoMatchers.XYSwipe();
-            Home.waitToLoad();
-            count++;
-        }
+    // The commented code below is part of some demo framework
+
+//    public static void performGeneralScrollCustom(Matcher<View> matcher, int maxNoOfScrolls) {
+//        int count = 0;
+//        while (!HelpersMethods.isObjectDisplayed(matcher) && count < maxNoOfScrolls) {
+//            EspressoMatchers.XYSwipe();
+//            Home.waitToLoad();
+//            count++;
+//        }
+//    }
+//
+//    public static void rotateRight() throws RemoteException {
+//         device.setOrientationRight();
+//    }
+
+    public static boolean isLinearLayoutWithFirstChildWithTextSortBy() {
+        return HelpersMethods.isObjectDisplayed(allOf(EspressoMatchers.nthChildOf(instanceOf(android.widget.LinearLayout.class), 0), withText(Constants.SORT_BY)));
+    }
+
+    public static boolean isSecondChildOfSortingGroupWithTextHighestRated() {
+        return HelpersMethods.isObjectDisplayed(allOf(EspressoMatchers.nthChildOfRadioGroup(withId(R.id.sorting_group), 1), withText(Constants.HIGHEST_RATED)));
+    }
+
+    public static void clickHighestRated() {
+        HelpersMethods.performClick(withId(R.id.highest_rated));
     }
 }

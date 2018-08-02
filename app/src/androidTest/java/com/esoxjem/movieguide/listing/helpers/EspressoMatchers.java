@@ -11,7 +11,6 @@ import android.support.test.espresso.matcher.ViewMatchers;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -20,8 +19,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
-
-import java.security.SecureRandom;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
@@ -149,28 +146,6 @@ public class EspressoMatchers {
         };
     }
 
-    public static int getListViewChildCount(Matcher<View> matcher) {
-        final int[] count = {0};
-        onView(matcher).perform(new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return ViewMatchers.isAssignableFrom(ListView.class);
-            }
-
-            @Override
-            public String getDescription() {
-                return "getting child count";
-            }
-
-            @Override
-            public void perform(UiController uiController, View view) {
-                ListView lv = (ListView) view;
-                count[0] = lv.getChildCount();
-            }
-        });
-        return count[0];
-    }
-
     public static int getRecyclerViewChildCount(Matcher<View> matcher) {
         final int[] count = {0};
         onView(matcher).perform(new ViewAction() {
@@ -191,15 +166,6 @@ public class EspressoMatchers {
             }
         });
         return count[0];
-    }
-
-    public static String generateRandomString(int stringLength) {
-        final String AB = "abcdefghijklmnopqrstuvwxyz";
-        SecureRandom rnd = new SecureRandom();
-        StringBuilder sb = new StringBuilder(stringLength);
-        for (int i = 0; i < stringLength; i++)
-            sb.append(AB.charAt(rnd.nextInt(AB.length())));
-        return sb.toString();
     }
 
     public static <T> Matcher<T> getFirstElement(final Matcher<T> matcher) {
@@ -289,12 +255,12 @@ public class EspressoMatchers {
         return new TypeSafeMatcher<View>() {
             @Override
             public void describeTo(Description description) {
-                description.appendText("the resource is with Bold style" );
+                description.appendText("the resource is with Bold style");
             }
 
             @Override
             public boolean matchesSafely(View view) {
-                TextView textView = (TextView)view;
+                TextView textView = (TextView) view;
                 return (textView.getTypeface().isBold());
             }
         };
@@ -303,10 +269,11 @@ public class EspressoMatchers {
     public static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
         return new BaseMatcher<View>() {
             int counter = 0;
+
             @Override
             public boolean matches(final Object item) {
                 if (matcher.matches(item)) {
-                    if(counter == position) {
+                    if (counter == position) {
                         counter++;
                         return true;
                     }
@@ -317,18 +284,23 @@ public class EspressoMatchers {
 
             @Override
             public void describeTo(final Description description) {
-                description.appendText("Element at hierarchy position "+position);
+                description.appendText("Element at hierarchy position " + position);
             }
         };
     }
-
 
     public static ViewAction swipeFromBottomToTop() {
         return new GeneralSwipeAction(Swipe.FAST, GeneralLocation.BOTTOM_CENTER,
                 GeneralLocation.TOP_CENTER, Press.FINGER);
     }
 
-    public static boolean XYSwipe() {
-        return device.swipe(device.getDisplayWidth()/2, device.getDisplayHeight() - 10, device.getDisplayWidth()/2, 0, 20);
+    // The commented code below is part of some demo framework
+
+//    public static boolean XYSwipe() {
+//        return device.swipe(device.getDisplayWidth()/2, device.getDisplayHeight() - 10, device.getDisplayWidth()/2, 0, 20);
+//    }
+
+    public static boolean XYSmallScroll() {
+        return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() / 4 * 3, device.getDisplayWidth() / 2, device.getDisplayHeight() / 4, 20);
     }
 }
