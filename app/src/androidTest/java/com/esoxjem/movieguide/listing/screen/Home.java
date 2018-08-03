@@ -7,10 +7,14 @@ import com.esoxjem.movieguide.listing.helpers.Constants;
 import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.HelpersMethods;
 
+import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.hasSibling;
+import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static com.esoxjem.movieguide.listing.helpers.EspressoMethods.getCurrentActivity;
+import static com.esoxjem.movieguide.listing.helpers.StartTheApplication.device;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.is;
@@ -70,5 +74,17 @@ public class Home {
 
     public static boolean hasTheRadioGroupChildrenWithDifferentNames() {
         return HelpersMethods.isVisible(allOf(withId(R.id.sorting_group), withChild(withId(R.id.most_popular)), withChild(withId(R.id.highest_rated)), withChild(withId(R.id.favorites)), withChild(withId(R.id.newest))));
+    }
+
+    public static String actualApplicationActivity() {
+        return getCurrentActivity().getLocalClassName();
+    }
+
+    public static boolean customSwipeUpTheHomePage() {
+        return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2, device.getDisplayWidth() / 3, device.getDisplayHeight() / 3, 40);
+    }
+
+    public static void waitForSpecificSeconds(final long millis) {
+        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(millis));
     }
 }

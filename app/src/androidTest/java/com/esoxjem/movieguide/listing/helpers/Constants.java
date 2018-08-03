@@ -12,7 +12,6 @@ public class Constants {
     public static final String IN_PARENT = " in parent";
     public static final String WAIT_FOR = "wait for ";
     public static final String MILLIS = " millis.";
-    public static final String ELEMENT_AT_HIERARCHY_POSITION = "Element at hierarchy position ";
     public static final String SKYSCRAPER = "Skyscraper";
     public static final String GETTING_TEXT_LINES_FROM_A_TEXT_VIEW = "getting text lines from a TextView";
     public static final String PURGE = "Purge";
@@ -21,4 +20,5 @@ public class Constants {
     public static final String THE_FIRST_PURGE = "The First Purge";
     public static final String THE_PURGE_ANARCHY = "The Purge: Anarchy";
     public static final String HAS_BOLD_TEXT = "has bold text";
+    public static final String NO_ACTIVITY_IN_STAGE_RESUMED = "No Activity in stage RESUMED";
 }

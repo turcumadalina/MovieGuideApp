@@ -2,7 +2,6 @@ package com.esoxjem.movieguide.listing.test;
 
 import android.support.test.espresso.Espresso;
 
-import com.esoxjem.movieguide.R;
 import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.StartTheApplication;
 import com.esoxjem.movieguide.listing.screen.Favorites;
@@ -11,20 +10,13 @@ import com.esoxjem.movieguide.listing.screen.Movie;
 
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.action.ViewActions.click;
-import static android.support.test.espresso.action.ViewActions.scrollTo;
-import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
-import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertTrue;
 
 public class FavoriteMoviesTest extends StartTheApplication {
     @Test
     public void testFavoriteMovies() {
-        // Step 1. Start the app
+        // Step 1. Start the app.
 
         // Expected Result: "MovieGuide" text is displayed.
         assertTrue("MovieGuide\" text is NOT displayed.", Home.isMovieGuideTextVisible());
@@ -36,7 +28,7 @@ public class FavoriteMoviesTest extends StartTheApplication {
         Home.typePurgeTextOnSearchBox();
 
         // Wait 2 seconds.
-        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(2000));
+        Home.waitForSpecificSeconds(2000);
 
         // Step 4. Click on the second movie from your list.
         Home.clickOnTheSecondMovieFromTheList();
@@ -47,20 +39,18 @@ public class FavoriteMoviesTest extends StartTheApplication {
         // Step 5. Click "Favorites" button.
         Movie.clickFavoriteButton();
 
-        // Step 6. Click back (NOT android) .
+        // Step 6. Click back (NOT android).
         Movie.clickBackButton();
 
         // Step 7. Close the keyboard.
         Espresso.closeSoftKeyboard();
 
+        // Swipe the page to see the third movie and wait 2 seconds.
+        Home.customSwipeUpTheHomePage();
+        Home.waitForSpecificSeconds(2000);
+
+
         // Step 8. Click on the third movie from your list and swipeUp.
-        onView(EspressoMethods.childAtPosition(withId(R.id.movies_listing), 2)).check(matches(isDisplayed()));
-
-        onView(EspressoMethods.childAtPosition(withId(R.id.movies_listing), 2)).perform(scrollTo(), click());
-        onView(withId(R.id.movies_listing)).perform(scrollTo(), click());
-
-        onView(EspressoMethods.childAtPosition(withId(R.id.movies_listing), 2)).perform(click());
-
         Home.clickOnTheThirdMovieFromTheList();
         Movie.swipeUpTheMoviePage();
 

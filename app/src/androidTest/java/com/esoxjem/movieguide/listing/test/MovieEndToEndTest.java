@@ -1,6 +1,5 @@
 package com.esoxjem.movieguide.listing.test;
 
-import com.esoxjem.movieguide.listing.helpers.EspressoMethods;
 import com.esoxjem.movieguide.listing.helpers.StartTheApplication;
 import com.esoxjem.movieguide.listing.screen.Favorites;
 import com.esoxjem.movieguide.listing.screen.Home;
@@ -8,8 +7,6 @@ import com.esoxjem.movieguide.listing.screen.Movie;
 
 import org.junit.Test;
 
-import static android.support.test.espresso.Espresso.onView;
-import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static junit.framework.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -25,7 +22,7 @@ public class MovieEndToEndTest extends StartTheApplication {
         Home.typeSkyscraperTextOnSearchBox();
 
         //Wait 2 seconds.
-        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(2000));
+        Home.waitForSpecificSeconds(2000);
 
         // Step 3. On the list, select the first movie with the name you are looking for.
         Movie.clickOnTheSpecificMovie();
@@ -62,7 +59,7 @@ public class MovieEndToEndTest extends StartTheApplication {
         Home.clickOnFavoritesButton();
 
         // Wait 3 seconds
-        onView(isRoot()).perform(EspressoMethods.waitForXSeconds(3000));
+        Home.waitForSpecificSeconds(3000);
 
         // Expected Result: On "Favorites" screen, the movie you are looking for is displayed.
         assertTrue("The specific movie is NOT displayed.", Favorites.isTheMovieVisible());

@@ -1,12 +1,10 @@
 package com.esoxjem.movieguide.listing.helpers;
 
-import android.support.test.espresso.NoMatchingViewException;
+import android.app.Activity;
 import android.support.test.espresso.UiController;
 import android.support.test.espresso.ViewAction;
-import android.support.test.espresso.ViewAssertion;
 import android.support.test.espresso.contrib.RecyclerViewActions;
-import android.support.test.espresso.matcher.BoundedMatcher;
-import android.support.v7.widget.RecyclerView;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -21,13 +19,15 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
+import java.util.Collection;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static android.support.test.runner.lifecycle.Stage.RESUMED;
 
 public class EspressoMethods {
     public static Matcher<View> childAtPosition(final Matcher<View> parentMatcher, final int position) {
@@ -168,29 +168,6 @@ public class EspressoMethods {
         };
     }
 
-    public static Matcher<View> getElementFromMatchAtPosition(final Matcher<View> matcher, final int position) {
-        return new BaseMatcher<View>() {
-            int counter = 0;
-
-            @Override
-            public boolean matches(final Object item) {
-                if (matcher.matches(item)) {
-                    if (counter == position) {
-                        counter++;
-                        return true;
-                    }
-                    counter++;
-                }
-                return false;
-            }
-
-            @Override
-            public void describeTo(final Description description) {
-                description.appendText(Constants.ELEMENT_AT_HIERARCHY_POSITION + position);
-            }
-        };
-    }
-
     public static Matcher<View> hasBoldText() {
         return new TypeSafeMatcher<View>() {
             @Override
@@ -232,61 +209,6 @@ public class EspressoMethods {
         return stringHolder[0];
     }
 
-    public static Matcher<View> withChildViewCount(final int count, final Matcher<View> childMatcher) {
-        return new BoundedMatcher<View, ViewGroup>(ViewGroup.class) {
-            @Override
-            protected boolean matchesSafely(ViewGroup viewGroup) {
-                int matchCount = 0;
-                for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                    if (childMatcher.matches(viewGroup.getChildAt(i))) {
-                        matchCount++;
-                    }
-                }
-                return matchCount == count;
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("ViewGroup with child-count=" + count + " and");
-                childMatcher.describeTo(description);
-            }
-        };
-    }
-
-    public static class RecyclerViewItemCountAssertion implements ViewAssertion {
-        private final int expectedCount;
-
-        public RecyclerViewItemCountAssertion(int expectedCount) {
-            this.expectedCount = expectedCount;
-        }
-
-        @Override
-        public void check(View view, NoMatchingViewException noViewFoundException) {
-            if (noViewFoundException != null) {
-                throw noViewFoundException;
-            }
-
-            RecyclerView recyclerView = (RecyclerView) view;
-            RecyclerView.Adapter adapter = recyclerView.getAdapter();
-            assertThat(adapter.getItemCount(), is(expectedCount));
-        }
-    }
-
-    private static int getTextViewCount(ViewGroup viewGroup) {
-        int count = 0;
-        for (int i = 0; i < viewGroup.getChildCount(); i++) {
-            View childView = viewGroup.getChildAt(i);
-
-            if (childView instanceof TextView) {
-                count++;
-            }
-            if (childView instanceof ViewGroup) {
-                count += getTextViewCount((ViewGroup) childView);
-            }
-        }
-        return count;
-    }
-
     public static int getCountChildrenFromTheRadioGroupList(Matcher<View> matcher) {
         final int[] count = {0};
         onView(matcher).perform(new ViewAction() {
@@ -313,5 +235,19 @@ public class EspressoMethods {
         String theFirstWordOfTheSecondMovie = getText(withText(Constants.THE_FIRST_PURGE)).substring(0, 3);
         String theFirstWordOfTheThirdMovie = getText(withText(Constants.THE_PURGE_ANARCHY)).substring(0, 3);
         return theFirstWordOfTheSecondMovie.equals(theFirstWordOfTheThirdMovie);
+    }
+
+    public static Activity getCurrentActivity() throws IllegalStateException {
+        final Activity[] resumedActivity = new Activity[1];
+        getInstrumentation().runOnMainSync(() -> {
+            Collection resumedActivities = ActivityLifecycleMonitorRegistry.getInstance()
+                    .getActivitiesInStage(RESUMED);
+            if (resumedActivities.iterator().hasNext()) {
+                resumedActivity[0] = (Activity) resumedActivities.iterator().next();
+            } else {
+                throw new IllegalStateException(Constants.NO_ACTIVITY_IN_STAGE_RESUMED);
+            }
+        });
+        return resumedActivity[0];
     }
 }
