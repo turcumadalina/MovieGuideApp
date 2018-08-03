@@ -1,14 +1,19 @@
 package com.esoxjem.movieguide.listing.helpers;
 
+import android.app.Activity;
 import android.support.test.espresso.AppNotIdleException;
 import android.support.test.espresso.NoMatchingRootException;
 import android.support.test.espresso.NoMatchingViewException;
+import android.support.test.runner.lifecycle.ActivityLifecycleMonitorRegistry;
 import android.view.View;
 
 import junit.framework.AssertionFailedError;
 
 import org.hamcrest.Matcher;
 
+import java.util.Collection;
+
+import static android.support.test.InstrumentationRegistry.getInstrumentation;
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.action.ViewActions.swipeUp;
@@ -16,6 +21,7 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isCompletelyDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isRoot;
+import static android.support.test.runner.lifecycle.Stage.RESUMED;
 import static com.esoxjem.movieguide.listing.helpers.EspressoTestBase.device;
 
 public class HelpersMethods {
@@ -57,7 +63,28 @@ public class HelpersMethods {
     }
 
     public static boolean swipeOnXY() {
-        return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 + 30,
-                device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 - 30, 10);
+        return device.swipe(device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 + 40,
+                device.getDisplayWidth() / 2, device.getDisplayHeight() / 2 - 40, 30);
+    }
+
+    public static Activity getCurrentActivity() throws IllegalStateException {
+        final Activity[] resumedActivity = new Activity[1];
+
+        getInstrumentation().runOnMainSync(new Runnable() {
+            public void run() {
+                Collection resumedActivities = ActivityLifecycleMonitorRegistry.getInstance()
+                        .getActivitiesInStage(RESUMED);
+                if (resumedActivities.iterator().hasNext()) {
+                    resumedActivity[0] = (Activity) resumedActivities.iterator().next();
+                } else {
+                    throw new IllegalStateException("No Activity in stage RESUMED");
+                }
+            }
+        });
+        return resumedActivity[0];
+    }
+
+    public static String appActivity() {
+        return getCurrentActivity().getLocalClassName();
     }
 }

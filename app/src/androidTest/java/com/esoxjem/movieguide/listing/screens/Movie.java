@@ -64,4 +64,8 @@ public class Movie {
     public static int getTrailersTextSize() {
         return EspressoMatchers.getTextSize(withText(Constants.TRAILERS));
     }
+
+    public static String appActivityName() {
+        return HelpersMethods.appActivity();
+    }
 }

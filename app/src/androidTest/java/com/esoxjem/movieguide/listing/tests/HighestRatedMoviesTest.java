@@ -12,6 +12,7 @@ import com.esoxjem.movieguide.listing.screens.SearchResults;
 import org.junit.Test;
 
 import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNotSame;
 import static junit.framework.Assert.assertTrue;
 
 public class HighestRatedMoviesTest extends EspressoTestBase {
@@ -54,7 +55,7 @@ public class HighestRatedMoviesTest extends EspressoTestBase {
         Movie.clickOnFirstMovieTrailer();
 
         // Verify: The page redirects to Youtube
-
+        assertNotSame("The page does not redirects to Youtube", Movie.appActivityName(), HelpersMethods.getCurrentActivity().getLocalClassName());
 
         // Step: Click back twice
         Espresso.pressBack();
